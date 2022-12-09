@@ -22,10 +22,10 @@ public class TrafficAnalysis {
             //Helper 
             String line;
 			//unique srcPorts
-			ArrayList<String> uniqueSrcPorts = new ArrayList<>();
-			ArrayList<String> uniqueKnownSrcPorts = new ArrayList<>();
+			ArrayList<String> uniqueSrcPorts = new ArrayList<String>();
+			ArrayList<String> uniqueKnownSrcPorts = new ArrayList<String>();
 			//Conections attempts
-			ArrayList<String> srcIPFlagSyn = new ArrayList<>();
+			ArrayList<String> srcIPFlagSyn = new ArrayList<String>();
             //Counter for Q1
             int ipv4Counter = 0,
                 ipv6Counter = 0,
@@ -48,8 +48,11 @@ public class TrafficAnalysis {
                                 srcPort     = tokens.nextToken().replace("\"",""),
                                 destPort    = tokens.nextToken().replace("\"",""),
                                 protocol    = tokens.nextToken().replace("\"","");
-                long            length      = Integer.parseInt(tokens.nextToken().replace("\"",""));
+                //long            length      = Integer.parseInt(tokens.nextToken().replace("\"",""));
                 String          flags       = tokens.nextToken().replace("\"","");
+				System.out.println(srcIP);
+				if(numOp == 60)
+					break;
 
                 //Counters to anwser the questions
 
@@ -64,7 +67,8 @@ public class TrafficAnalysis {
 				if(!uniqueSrcPorts.contains(srcPort))
 					uniqueSrcPorts.add(srcPort);
 				if(flags.equals("SYN"))
-					srcIPFlagSyn.add(srcIP);
+					if(!srcIP.equals(""))
+						srcIPFlagSyn.add(srcIP);
 				if(protocol.equals("TCP"))
 					tpcConnections++;
 				
@@ -74,16 +78,16 @@ public class TrafficAnalysis {
 
             }
 
-			String mostRepeatedIPOnConexions = 	srcIPFlagSyn.stream().collect(Collectors.groupingBy(w -> w, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
+			//String mostRepeatedIPOnConexions = 	srcIPFlagSyn.stream().collect(Collectors.groupingBy(w -> w, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Entry::getValue)).get().getKey();
 
 			pr.println("Q1 - IPV4: " + ipv4Counter + ", IPV6: " + ipv6Counter);
 			pr.println("Q2 - Time: " +totalTime + "Numero de pacotes: " +counter);
 			pr.println("Q3 - Source ports unicas: " + uniqueSrcPorts.toString() + " Correspondentes a servicos de rede conhecidos: " + uniqueKnownSrcPorts );
-			pr.println("Q6 - Tentativas de conexão: " + srcIPFlagSyn.size() + " IP que chamou mais: " + mostRepeatedIPOnConexions );
+			pr.println("Q6 - Tentativas de conexão: " + srcIPFlagSyn.size() + " IP que chamou mais: "  );
 			pr.println("Q7 - TCP Connections: " +tpcConnections);
 
 
-
+			pr.close();
 
 
         }
